@@ -4,11 +4,12 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local VirtualUser = game:GetService("VirtualUser")
 local RunService = game:GetService("RunService")
+local Stats = game:GetService("Stats")
 local Mouse = LocalPlayer:GetMouse()
 local Camera = workspace.CurrentCamera
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "AditzMods_UltraV3"
+ScreenGui.Name = "AditzMods_UltraV4"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -17,9 +18,11 @@ local BGColor = Color3.fromRGB(11, 8, 20)
 local PanelColor = Color3.fromRGB(22, 16, 38)
 local ActiveColor = Color3.fromRGB(180, 70, 255)
 
+local OriginalMaterials = {}
+
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 520, 0, 340)
-MainFrame.Position = UDim2.new(0.5, -260, 0.4, -170)
+MainFrame.Size = UDim2.new(0, 520, 0, 360)
+MainFrame.Position = UDim2.new(0.5, -260, 0.4, -180)
 MainFrame.BackgroundColor3 = BGColor
 MainFrame.BorderSizePixel = 0
 MainFrame.ClipsDescendants = true
@@ -70,15 +73,33 @@ TopCorner.CornerRadius = UDim.new(0, 14)
 TopCorner.Parent = TopBar
 
 local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(0.6, 0, 1, 0)
+Title.Size = UDim2.new(0.5, 0, 1, 0)
 Title.Position = UDim2.new(0, 18, 0, 0)
-Title.Text = "* ADITZMODS ENGINE | PREMIUM v3"
+Title.Text = "* ADITZMODS ENGINE | v4"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
-Title.TextSize = 16
+Title.TextSize = 15
 Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.BackgroundTransparency = 1
 Title.Parent = TopBar
+
+local MonitorLabel = Instance.new("TextLabel")
+MonitorLabel.Size = UDim2.new(0.35, 0, 1, 0)
+MonitorLabel.Position = UDim2.new(0.65, -95, 0, 0)
+MonitorLabel.Text = "FPS: 60 | PING: 0ms"
+MonitorLabel.TextColor3 = Color3.fromRGB(0, 255, 150)
+MonitorLabel.Font = Enum.Font.Code
+MonitorLabel.TextSize = 12
+MonitorLabel.TextXAlignment = Enum.TextXAlignment.Right
+MonitorLabel.BackgroundTransparency = 1
+MonitorLabel.Parent = TopBar
+
+local fpsCount = 0
+RunService.RenderStepped:Connect(function(delta)
+    fpsCount = math.floor(1 / delta)
+    local ping = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
+    MonitorLabel.Text = "FPS: " .. tostring(fpsCount) .. " | PING: " .. tostring(ping) .. "ms"
+end)
 
 local CloseBtn = Instance.new("TextButton")
 CloseBtn.Size = UDim2.new(0, 32, 0, 32)
@@ -132,10 +153,10 @@ MiniIcon.MouseButton1Click:Connect(function() MiniIcon.Visible = false; MainFram
 CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
 
 local ContentContainer = Instance.new("ScrollingFrame")
-ContentContainer.Size = UDim2.new(1, -24, 1, -90)
+ContentContainer.Size = UDim2.new(1, -24, 1, -95)
 ContentContainer.Position = UDim2.new(0, 12, 0, 55)
 ContentContainer.BackgroundTransparency = 1
-ContentContainer.CanvasSize = UDim2.new(0, 0, 2.2, 0)
+ContentContainer.CanvasSize = UDim2.new(0, 0, 2.5, 0)
 ContentContainer.ScrollBarThickness = 4
 ContentContainer.ScrollBarImageColor3 = ThemeColor
 ContentContainer.Parent = MainFrame
@@ -228,20 +249,22 @@ end
 
 CreateToggle("Enable Function", function(val) Config.Master = val end)
 CreateToggle("Auto Headshot", function(val) Config.AutoHead = val end)
-CreateToggle( "Body Headshot", function(val) Config.BodyHead = val end)
+CreateToggle("Body Headshot", function(val) Config.BodyHead = val end)
+CreateToggle("Silent Aim", function(val) Config.Silent = val end)
 
-CreateToggle("Silent Aim", function(val) 
-    Config.Silent = val 
-end)
-
-RunService.RenderStepped:Connect(function()
-    if Config.Master and Config.Silent then
+local HookMeta = getrawmetatable(game)
+local OldIndex = HookMeta.__index
+setreadonly(HookMeta, false)
+HookMeta.__index = newcclosure(function(self, key)
+    if Config.Master and Config.Silent and tostring(key) == "Hit" then
         local target = GetClosestTarget()
         if target then
-            Camera.CFrame = CFrame.new(Camera.CFrame.Position, target.Position)
+            return target.CFrame
         end
     end
+    return OldIndex(self, key)
 end)
+setreadonly(HookMeta, true)
 
 CreateToggle("Auto Fire", function(val)
     Config.AutoFire = val
@@ -282,7 +305,6 @@ CreateToggle("Jumpaclip", function(val)
             task.wait(0.05)
             if Config.Master and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
                 LocalPlayer.Character.Humanoid.JumpPower = 250
-                LocalPlayer.Character.Humanoid.Clip = false
                 for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
                     if part:IsA("BasePart") then part.CanCollide = false end
                 end
@@ -313,11 +335,18 @@ CreateToggle("Fly", function(val)
 end)
 
 CreateToggle("Minecraft Graphic", function(val)
-    if val and Config.Master then
-        game:GetService("Lighting").GlobalShadows = false
-        for _, obj in pairs(workspace:GetDescendants()) do
-            if obj:IsA("Texture") or obj:IsA("Decal") then obj:Destroy() end
+    if val then
+        if Config.Master then
+            game:GetService("Lighting").GlobalShadows = false
+            for _, obj in pairs(workspace:GetDescendants()) do
+                if obj:IsA("Texture") or obj:IsA("Decal") then
+                    OriginalMaterials[obj] = {Parent = obj.Parent, Class = obj.ClassName}
+                    obj:Destroy()
+                end
+            end
         end
+    else
+        game:GetService("Lighting").GlobalShadows = true
     end
 end)
 
