@@ -6,41 +6,49 @@ local UserInputService = game:GetService("UserInputService")
 local Mouse = LocalPlayer:GetMouse()
 local Camera = workspace.CurrentCamera
 
-local Localization = {
-    ["ID"] = {combat = "TEMBAK", movement = "GERAK", visuals = "GRAFIS", settings = "PENGATURAN"},
-    ["EN"] = {combat = "COMBAT", movement = "MOVE", visuals = "VISUAL", settings = "SETTINGS"},
-    ["ES"] = {combat = "COMBATE", movement = "MOVER", visuals = "VISUAL", settings = "OPCIONES"},
-    ["FR"] = {combat = "COMBAT", movement = "MOUV.", visuals = "VISUEL", settings = "REGLAGES"},
-    ["FIL"] = {combat = "LABANAN", movement = "KILOS", visuals = "BISWAL", settings = "SETTING"}
-}
 local currentLang = "ID"
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "AditDosHub_Custom"
+ScreenGui.Name = "AditDosHub_Premium"
 ScreenGui.ResetOnSpawn = false
 pcall(function() ScreenGui.Parent = CoreGui end)
 if not ScreenGui.Parent then ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui") end
 
-local ThemeColor = Color3.fromRGB(140, 20, 252)
-local BGColor = Color3.fromRGB(15, 11, 25)
-local PanelColor = Color3.fromRGB(25, 20, 40)
+local ThemeColor = Color3.fromRGB(150, 30, 255)
+local BGColor = Color3.fromRGB(11, 8, 20)
+local PanelColor = Color3.fromRGB(22, 16, 38)
+local ActiveColor = Color3.fromRGB(180, 70, 255)
 
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 500, 0, 320)
-MainFrame.Position = UDim2.new(0.5, -250, 0.4, -160)
+MainFrame.Size = UDim2.new(0, 520, 0, 340)
+MainFrame.Position = UDim2.new(0.5, -260, 0.4, -170)
 MainFrame.BackgroundColor3 = BGColor
 MainFrame.BorderSizePixel = 0
 MainFrame.ClipsDescendants = true
+MainFrame.BackgroundTransparency = 1
 MainFrame.Parent = ScreenGui
 
 local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 10)
+UICorner.CornerRadius = UDim.new(0, 14)
 UICorner.Parent = MainFrame
 
 local UIStroke = Instance.new("UIStroke")
 UIStroke.Color = ThemeColor
-UIStroke.Thickness = 2
+UIStroke.Thickness = 2.5
+UIStroke.Transparency = 1
 UIStroke.Parent = MainFrame
+
+spawn(function()
+    TweenService:Create(MainFrame, TweenInfo.new(0.6, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 0.05}):Play()
+    TweenService:Create(UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Transparency = 0}):Play()
+end)
+
+spawn(function()
+    while task.wait(0.05) do
+        local hue = (tick() % 5) / 5
+        UIStroke.Color = Color3.fromHSV(hue, 0.8, 1)
+    end
+end)
 
 local dragging, dragInput, dragStart, startPos
 MainFrame.InputBegan:Connect(function(input)
@@ -60,19 +68,19 @@ UserInputService.InputChanged:Connect(function(input)
 end)
 
 local TopBar = Instance.new("Frame")
-TopBar.Size = UDim2.new(1, 0, 0, 40)
+TopBar.Size = UDim2.new(1, 0, 0, 45)
 TopBar.BackgroundColor3 = PanelColor
 TopBar.BorderSizePixel = 0
 TopBar.Parent = MainFrame
 
 local TopCorner = Instance.new("UICorner")
-TopCorner.CornerRadius = UDim.new(0, 10)
+TopCorner.CornerRadius = UDim.new(0, 14)
 TopCorner.Parent = TopBar
 
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(0.6, 0, 1, 0)
-Title.Position = UDim2.new(0, 15, 0, 0)
-Title.Text = "ADITZ MODS | FPS CUSTOM"
+Title.Position = UDim2.new(0, 18, 0, 0)
+Title.Text = "* ADITDOS ENGINE | VIP V3"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 16
@@ -81,211 +89,249 @@ Title.BackgroundTransparency = 1
 Title.Parent = TopBar
 
 local CloseBtn = Instance.new("TextButton")
-CloseBtn.Size = UDim2.new(0, 30, 0, 30)
-CloseBtn.Position = UDim2.new(1, -40, 0, 5)
+CloseBtn.Size = UDim2.new(0, 32, 0, 32)
+CloseBtn.Position = UDim2.new(1, -45, 0, 6.5)
 CloseBtn.Text = "X"
-CloseBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
+CloseBtn.TextColor3 = Color3.fromRGB(255, 90, 90)
 CloseBtn.Font = Enum.Font.GothamBold
-CloseBtn.TextSize = 16
-CloseBtn.BackgroundColor3 = Color3.fromRGB(40, 20, 20)
+CloseBtn.TextSize = 14
+CloseBtn.BackgroundColor3 = Color3.fromRGB(45, 22, 22)
 CloseBtn.Parent = TopBar
-Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 5)
+Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 8)
 
 local MiniBtn = Instance.new("TextButton")
-MiniBtn.Size = UDim2.new(0, 30, 0, 30)
-MiniBtn.Position = UDim2.new(1, -75, 0, 5)
-MiniBtn.Text = "−"
-MiniBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+MiniBtn.Size = UDim2.new(0, 32, 0, 32)
+MiniBtn.Position = UDim2.new(1, -85, 0, 6.5)
+MiniBtn.Text = "-"
+MiniBtn.TextColor3 = Color3.fromRGB(230, 230, 230)
 MiniBtn.Font = Enum.Font.GothamBold
-MiniBtn.TextSize = 16
-MiniBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+MiniBtn.TextSize = 15
+MiniBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
 MiniBtn.Parent = TopBar
-Instance.new("UICorner", MiniBtn).CornerRadius = UDim.new(0, 5)
+Instance.new("UICorner", MiniBtn).CornerRadius = UDim.new(0, 8)
 
 local Watermark = Instance.new("TextLabel")
-Watermark.Size = UDim2.new(1, 0, 0, 25)
-Watermark.Position = UDim2.new(0, 0, 1, -25)
+Watermark.Size = UDim2.new(1, 0, 0, 28)
+Watermark.Position = UDim2.new(0, 0, 1, -28)
 Watermark.BackgroundColor3 = PanelColor
-Watermark.Text = "⚡ Powered by Yt @adityabrr ⚡"
-Watermark.TextColor3 = ThemeColor
+Watermark.Text = "* ACCESS GRANTED TO ADITYABRR *"
+Watermark.TextColor3 = Color3.fromRGB(200, 150, 255)
 Watermark.Font = Enum.Font.GothamBold
-Watermark.TextSize = 12
+Watermark.TextSize = 11
 Watermark.Parent = MainFrame
 
 local MiniIcon = Instance.new("TextButton")
-MiniIcon.Size = UDim2.new(0, 50, 0, 50)
-MiniIcon.Position = UDim2.new(0.05, 0, 0.1, 0)
+MiniIcon.Size = UDim2.new(0, 55, 0, 55)
+MiniIcon.Position = UDim2.new(0, 25, 0, 25)
 MiniIcon.BackgroundColor3 = BGColor
-MiniIcon.Text = "🔮"
-MiniIcon.TextSize = 24
+MiniIcon.Text = "[+]"
+MiniIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
+MiniIcon.Font = Enum.Font.GothamBold
+MiniIcon.TextSize = 16
 MiniIcon.Visible = false
+MiniIcon.BackgroundTransparency = 1
 MiniIcon.Parent = ScreenGui
-Instance.new("UICorner", MiniIcon).CornerRadius = UDim.new(0, 25)
+Instance.new("UICorner", MiniIcon).CornerRadius = UDim.new(0, 28)
 local MiniStroke = Instance.new("UIStroke", MiniIcon)
 MiniStroke.Color = ThemeColor
-MiniStroke.Thickness = 2
+MiniStroke.Thickness = 2.5
+MiniStroke.Transparency = 1
 
 MiniBtn.MouseButton1Click:Connect(function()
-    TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 500, 0, 0)}).Completed:Connect(function()
-        MainFrame.Visible = false
-        MiniIcon.Visible = true
-        MiniIcon.Size = UDim2.new(0, 0, 0, 0)
-        TweenService:Create(MiniIcon, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 50, 0, 50)}):Play()
-    end):Play()
+    TweenService:Create(MainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1}):Play()
+    TweenService:Create(UIStroke, TweenInfo.new(0.3), {Transparency = 1}):Play()
+    task.wait(0.35)
+    MainFrame.Visible = false
+    MiniIcon.Visible = true
+    TweenService:Create(MiniIcon, TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 0.1}):Play()
+    TweenService:Create(MiniStroke, TweenInfo.new(0.4), {Transparency = 0}):Play()
 end)
 
 MiniIcon.MouseButton1Click:Connect(function()
+    TweenService:Create(MiniIcon, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
+    TweenService:Create(MiniStroke, TweenInfo.new(0.3), {Transparency = 1}):Play()
+    task.wait(0.25)
     MiniIcon.Visible = false
     MainFrame.Visible = true
-    TweenService:Create(MainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 500, 0, 320)}):Play()
+    TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 520, 0, 340), BackgroundTransparency = 0.05}):Play()
+    TweenService:Create(UIStroke, TweenInfo.new(0.5), {Transparency = 0}):Play()
 end)
 
 CloseBtn.MouseButton1Click:Connect(function()
+    TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1}):Play()
+    task.wait(0.3)
     ScreenGui:Destroy()
 end)
 
 local TabContainer = Instance.new("Frame")
-TabContainer.Size = UDim2.new(0, 120, 1, -65)
-TabContainer.Position = UDim2.new(0, 10, 0, 45)
+TabContainer.Size = UDim2.new(0, 130, 1, -85)
+TabContainer.Position = UDim2.new(0, 12, 0, 55)
 TabContainer.BackgroundTransparency = 1
 TabContainer.Parent = MainFrame
 
 local ContentContainer = Instance.new("Frame")
-ContentContainer.Size = UDim2.new(1, -150, 1, -65)
-ContentContainer.Position = UDim2.new(0, 140, 0, 45)
+ContentContainer.Size = UDim2.new(1, -165, 1, -85)
+ContentContainer.Position = UDim2.new(0, 153, 0, 55)
 ContentContainer.BackgroundTransparency = 1
 ContentContainer.Parent = MainFrame
 
 local Tabs = {"COMBAT", "MOVEMENT", "VISUAL", "SETTINGS"}
 local Pages = {}
+local TabButtons = {}
 
 for i, tabName in ipairs(Tabs) do
     local Page = Instance.new("ScrollingFrame")
     Page.Size = UDim2.new(1, 0, 1, 0)
     Page.BackgroundTransparency = 1
-    Page.CanvasSize = UDim2.new(0, 0, 1.5, 0)
-    Page.ScrollBarThickness = 2
-    Page.Visible = (string.match(tostring(i), "1") and true or false)
+    Page.CanvasSize = UDim2.new(0, 0, 1.8, 0)
+    Page.ScrollBarThickness = 3
+    Page.ScrollBarImageColor3 = ThemeColor
+    Page.Visible = false
+    if string.match(tostring(i), "1") then Page.Visible = true end
     Page.Parent = ContentContainer
     Pages[tabName] = Page
     
     local UIList = Instance.new("UIListLayout")
-    UIList.Padding = UDim.new(0, 8)
+    UIList.Padding = UDim.new(0, 9)
     UIList.Parent = Page
 
     local TabBtn = Instance.new("TextButton")
-    TabBtn.Size = UDim2.new(1, 0, 0, 35)
-    TabBtn.Position = UDim2.new(0, 0, 0, (i-1)*40)
-    TabBtn.BackgroundColor3 = (string.match(tostring(i), "1") and ThemeColor or PanelColor)
+    TabBtn.Size = UDim2.new(1, 0, 0, 38)
+    TabBtn.Position = UDim2.new(0, 0, 0, (i-1)*44)
+    TabBtn.BackgroundColor3 = PanelColor
+    if string.match(tostring(i), "1") then TabBtn.BackgroundColor3 = ThemeColor end
     TabBtn.Text = tabName
     TabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     TabBtn.Font = Enum.Font.GothamBold
     TabBtn.TextSize = 12
     TabBtn.Parent = TabContainer
-    Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 6)
+    Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 8)
+    TabButtons[tabName] = TabBtn
 
     TabBtn.MouseButton1Click:Connect(function()
-        for _, p in pairs(Pages) do p.Visible = false end
-        for _, btn in pairs(TabContainer:GetChildren()) do if btn:IsA("TextButton") then btn.BackgroundColor3 = PanelColor end end
+        for _, p do p.Visible = false end
+        for _, btn in pairs(TabButtons) do btn.BackgroundColor3 = PanelColor end
         Page.Visible = true
-        TweenService:Create(TabBtn, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {BackgroundColor3 = ThemeColor}):Play()
+        TweenService:Create(TabBtn, TweenInfo.new(0.2), {BackgroundColor3 = ThemeColor}):Play()
     end)
 end
 
 local function CreateToggle(parent, text, callback)
     local Frame = Instance.new("Frame")
-    Frame.Size = UDim2.new(1, -10, 0, 40)
+    Frame.Size = UDim2.new(1, -12, 0, 44)
     Frame.BackgroundColor3 = PanelColor
     Frame.Parent = parent
-    Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 6)
+    Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 8)
 
     local Label = Instance.new("TextLabel")
     Label.Size = UDim2.new(0.7, 0, 1, 0)
-    Label.Position = UDim2.new(0, 10, 0, 0)
+    Label.Position = UDim2.new(0, 12, 0, 0)
     Label.Text = text
-    Label.TextColor3 = Color3.fromRGB(230, 230, 230)
-    Label.Font = Enum.Font.Gotham
+    Label.TextColor3 = Color3.fromRGB(240, 240, 240)
+    Label.Font = Enum.Font.GothamMedium
     Label.TextSize = 13
     Label.TextXAlignment = Enum.TextXAlignment.Left
     Label.BackgroundTransparency = 1
     Label.Parent = Frame
 
     local Switch = Instance.new("TextButton")
-    Switch.Size = UDim2.new(0, 45, 0, 22)
-    Switch.Position = UDim2.new(1, -55, 0, 9)
-    Switch.BackgroundColor3 = Color3.fromRGB(50, 45, 65)
+    Switch.Size = UDim2.new(0, 48, 0, 24)
+    Switch.Position = UDim2.new(1, -60, 0, 10)
+    Switch.BackgroundColor3 = Color3.fromRGB(40, 35, 55)
     Switch.Text = ""
     Switch.Parent = Frame
-    local SwCorner = Instance.new("UICorner", Switch)
-    SwCorner.CornerRadius = UDim.new(1, 0)
+    Instance.new("UICorner", Switch).CornerRadius = UDim.new(1, 0)
 
     local Dot = Instance.new("Frame")
-    Dot.Size = UDim2.new(0, 16, 0, 16)
+    Dot.Size = UDim2.new(0, 18, 0, 18)
     Dot.Position = UDim2.new(0, 3, 0, 3)
     Dot.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     Dot.Parent = Switch
     Instance.new("UICorner", Dot).CornerRadius = UDim.new(1, 0)
 
-    local enabled = false
+    local state = {value = false}
     Switch.MouseButton1Click:Connect(function()
-        enabled = not enabled
-        local targetPos = enabled and UDim2.new(1, -19, 0, 3) or UDim2.new(0, 3, 0, 3)
-        local targetColor = enabled and ThemeColor or Color3.fromRGB(50, 45, 65)
-        
-        TweenService:Create(Dot, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {Position = targetPos}):Play()
-        TweenService:Create(Switch, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {BackgroundColor3 = targetColor}):Play()
-        callback(enabled)
+        if state.value then
+            state.value = false
+            TweenService:Create(Dot, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {Position = UDim2.new(0, 3, 0, 3)}):Play()
+            TweenService:Create(Switch, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(40, 35, 55)}):Play()
+            callback(false)
+        else
+            state.value = true
+            TweenService:Create(Dot, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {Position = UDim2.new(1, -21, 0, 3)}):Play()
+            TweenService:Create(Switch, TweenInfo.new(0.2), {BackgroundColor3 = ActiveColor}):Play()
+            callback(true)
+        end
     end)
 end
 
 local function CreateButton(parent, text, callback)
     local Btn = Instance.new("TextButton")
-    Btn.Size = UDim2.new(1, -10, 0, 35)
+    Btn.Size = UDim2.new(1, -12, 0, 38)
     Btn.BackgroundColor3 = PanelColor
     Btn.Text = text
     Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Btn.Font = Enum.Font.GothamMedium
+    Btn.Font = Enum.Font.GothamBold
     Btn.TextSize = 13
     Btn.Parent = parent
-    Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 6)
+    Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 8)
+
+    local Stroke = Instance.new("UIStroke", Btn)
+    Stroke.Color = ThemeColor
+    Stroke.Thickness = 1
+    Stroke.Transparency = 0.6
 
     Btn.MouseButton1Click:Connect(function()
-        local oldSize = Btn.Size
-        Btn:TweenSize(UDim2.new(1, -15, 0, 32), "Out", "Quad", 0.1, true, function()
-            Btn:TweenSize(oldSize, "Out", "Quad", 0.1)
-        end)
+        local origColor = Btn.BackgroundColor3
+        TweenService:Create(Btn, TweenInfo.new(0.1), {BackgroundColor3 = ActiveColor}):Play()
         callback()
+        task.wait(0.1)
+        TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundColor3 = origColor}):Play()
     end)
 end
 
-local SilentAim = false
-CreateToggle(Pages["COMBAT"], "Silent Aim", function(val) SilentAim = val end)
-CreateToggle(Pages["COMBAT"], "Body Headshot", function(val) _G.BodyHeadshot = val end)
+local SilentAimStatus = {Active = false}
+local BodyHeadshotStatus = {Active = false}
+local AutoHeadStatus = {Active = false}
 
-local AutoFire = false
+CreateToggle(Pages["COMBAT"], "Silent Aim", function(val) SilentAimStatus.Active = val end)
+CreateToggle(Pages["COMBAT"], "Body Headshot", function(val) BodyHeadshotStatus.Active = val end)
+CreateToggle(Pages["COMBAT"], "Auto Head", function(val) AutoHeadStatus.Active = val end)
+
+local AutoFireActive = {State = false}
 CreateToggle(Pages["COMBAT"], "Auto Fire", function(val) 
-    AutoFire = val 
+    AutoFireActive.State = val 
     spawn(function()
-        while AutoFire do
+        while AutoFireActive.State do
             task.wait(0.1)
-            if Mouse.Target and Mouse.Target.Parent:FindFirstChild("Humanoid") then
-                if not string.match(Mouse.Target.Parent.Name, LocalPlayer.Name) then mouse1click() end
+            if Mouse.Target then
+                local pName = Mouse.Target.Parent.Name
+                if pName ~= LocalPlayer.Name then
+                    if Mouse.Target.Parent:FindFirstChild("Humanoid") then
+                        mouse1click()
+                    end
+                end
             end
         end
     end)
 end)
 
-CreateToggle(Pages["COMBAT"], "Auto Head", function(val) _G.AutoHead = val end)
 CreateButton(Pages["COMBAT"], "Auto Clear Map Objects", function()
     for _, obj in pairs(workspace:GetChildren()) do
-        if obj:IsA("Debris") or string.match(obj.Name, "Corpse") then obj:Destroy() end
+        if obj:IsA("Debris") then obj:Destroy() end
+        if string.match(obj.Name, "Corpse") then obj:Destroy() end
     end
 end)
+
 CreateButton(Pages["COMBAT"], "Teleport Mark", function()
     for _, p in pairs(Players:GetPlayers()) do
-        if not string.match(p.Name, LocalPlayer.Name) and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-            LocalPlayer.Character.HumanoidRootPart.CFrame = p.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,3)
-            break
+        if p.Name ~= LocalPlayer.Name then
+            if p.Character then
+                if p.Character:FindFirstChild("HumanoidRootPart") then
+                    LocalPlayer.Character.HumanoidRootPart.CFrame = p.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,3)
+                    break
+                end
+            end
         end
     end
 end)
@@ -296,74 +342,93 @@ setreadonly(mt, false)
 mt.__namecall = newcclosure(function(self, ...)
     local method = getnamecallmethod()
     local args = {...}
-    if SilentAim and (string.match(method, "FindPartOnRayWithIgnoreList") or string.match(method, "Raycast")) then
-        local target = nil
-        local maxDist = math.huge
-        for _, p in pairs(Players:GetPlayers()) do
-            if not string.match(p.Name, LocalPlayer.Name) and p.Character and p.Character:FindFirstChild("Head") then
-                local pos, onScreen = Camera:WorldToScreenPoint(p.Character.Head.Position)
-                if onScreen then
-                    local dist = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(pos.X, pos.Y)).Magnitude
-                    if dist < maxDist then maxDist = dist; target = p end
+    if SilentAimStatus.Active then
+        if string.match(method, "Raycast") or string.match(method, "FindPartOnRay") then
+            local target = nil
+            local maxDist = math.huge
+            for _, p in pairs(Players:GetPlayers()) do
+                if p.Name ~= LocalPlayer.Name then
+                    if p.Character then
+                        if p.Character:FindFirstChild("Head") then
+                            local pos, onScreen = Camera:WorldToScreenPoint(p.Character.Head.Position)
+                            if onScreen then
+                                local dist = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(pos.X, pos.Y)).Magnitude
+                                if dist < maxDist then maxDist = dist; target = p end
+                            end
+                        end
+                    end
                 end
             end
-        end
-        if target then
-            local pName = _G.BodyHeadshot and "HumanoidRootPart" or "Head"
-            args[1] = Ray.new(Camera.CFrame.Position, (target.Character[pName].Position - Camera.CFrame.Position).Unit * 1000)
+            if target then
+                local partName = "Head"
+                if BodyHeadshotStatus.Active then partName = "HumanoidRootPart" end
+                if AutoHeadStatus.Active then partName = "Head" end
+                args[1] = Ray.new(Camera.CFrame.Position, (target.Character[partName].Position - Camera.CFrame.Position).Unit * 1000)
+            end
         end
     end
     return old(self, unpack(args))
 end)
 setreadonly(mt, true)
 
-local SpeedActive = false
+local SpeedActive = {State = false}
 CreateToggle(Pages["MOVEMENT"], "Speed Max", function(val)
-    SpeedActive = val
+    SpeedActive.State = val
     spawn(function()
-        while SpeedActive do
-            task.wait(0.1)
+        while SpeedActive.State do
+            task.wait(0.05)
             pcall(function() LocalPlayer.Character.Humanoid.WalkSpeed = 150 end)
         end
         pcall(function() LocalPlayer.Character.Humanoid.WalkSpeed = 16 end)
     end)
 end)
 
-local JumpActive = false
+local JumpActive = {State = false}
 CreateToggle(Pages["MOVEMENT"], "Jump Max", function(val)
-    JumpActive = val
+    JumpActive.State = val
     spawn(function()
-        while JumpActive do
-            task.wait(0.1)
+        while JumpActive.State do
+            task.wait(0.05)
             pcall(function() LocalPlayer.Character.Humanoid.JumpPower = 250 end)
         end
         pcall(function() LocalPlayer.Character.Humanoid.JumpPower = 50 end)
     end)
 end)
 
-local EspActive = false
+local EspActive = {State = false}
 CreateToggle(Pages["VISUAL"], "Esp Line Box", function(val)
-    EspActive = val
+    EspActive.State = val
     for _, p in pairs(Players:GetPlayers()) do
-        if not string.match(p.Name, LocalPlayer.Name) and p.Character then
-            if EspActive then
-                local hl = Instance.new("Highlight")
-                hl.Name = "AditHighlight"
-                hl.FillColor = ThemeColor
-                hl.Parent = p.Character
-            else
-                if p.Character:FindFirstChild("AditHighlight") then p.Character.AditHighlight:Destroy() end
+        if p.Name ~= LocalPlayer.Name then
+            if p.Character then
+                if EspActive.State then
+                    local hl = Instance.new("Highlight")
+                    hl.Name = "AditHighlight"
+                    hl.FillColor = ThemeColor
+                    hl.Parent = p.Character
+                else
+                    if p.Character:FindFirstChild("AditHighlight") then p.Character.AditHighlight:Destroy() end
+                end
             end
         end
     end
 end)
 
+local HologramActive = {State = false}
 CreateToggle(Pages["VISUAL"], "Hologram", function(val)
-    _G.Hologram = val
+    HologramActive.State = val
     for _, p in pairs(Players:GetPlayers()) do
-        if not string.match(p.Name, LocalPlayer.Name) and p.Character then
-            for _, part in pairs(p.Character:GetChildren()) do
-                if part:IsA("BasePart") then part.Material = (val and Enum.Material.ForceField or Enum.Material.Plastic) end
+        if p.Name ~= LocalPlayer.Name then
+            if p.Character then
+                for _, part in pairs(p.Character:GetChildren()) do
+                    if part:IsA("BasePart") then 
+                        if HologramActive.State then
+                            part.Material = Enum.Material.ForceField
+                        else
+                            part.Material = Enum.Material.Plastic
+                        end
+                    end
+                end
             end
         end
     end
@@ -372,25 +437,28 @@ end)
 CreateButton(Pages["VISUAL"], "Minecraft Graphic", function()
     game:GetService("Lighting").GlobalShadows = false
     for _, obj in pairs(workspace:GetDescendants()) do
-        if obj:IsA("Texture") or obj:IsA("Decal") then obj:Destroy() end
+        if obj:IsA("Texture") then obj:Destroy() end
+        if obj:IsA("Decal") then obj:Destroy() end
     end
 end)
 
 CreateButton(Pages["SETTINGS"], "Ubah Warna Acak", function()
-    local r = math.random(100, 255)
-    local g = math.random(50, 150)
-    local b = math.random(180, 255)
+    local r = math.random(120, 255)
+    local g = math.random(60, 160)
+    local b = math.random(190, 255)
     ThemeColor = Color3.fromRGB(r, g, b)
-    UIStroke.Color = ThemeColor
-    MiniStroke.Color = ThemeColor
+    ActiveColor = Color3.fromRGB(math.clamp(r+20, 0, 255), math.clamp(g+20, 0, 255), 255)
     Watermark.TextColor3 = ThemeColor
 end)
 
 CreateButton(Pages["SETTINGS"], "Ganti Bahasa", function()
-    local langs = {"ID", "EN", "ES", "FR", "FIL"}
-    local curIdx = table.find(langs, currentLang) or 1
-    local nextIdx = curIdx + 1
-    if nextIdx > #langs then nextIdx = 1 end
-    currentLang = langs[nextIdx]
-    Title.Text = "ADITZ MODS " .. currentLang
+    local nextLang = "ID"
+    if currentLang == "ID" then nextLang = "EN"
+    elseif currentLang == "EN" then nextLang = "ES"
+    elseif currentLang == "ES" then nextLang = "FR"
+    elseif currentLang == "FR" then nextLang = "FIL"
+    elseif currentLang == "FIL" then nextLang = "ID"
+    end
+    currentLang = nextLang
+    Title.Text = "* ADITDOS ENGINE " .. currentLang
 end)
