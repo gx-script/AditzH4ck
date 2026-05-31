@@ -9,7 +9,7 @@ local Mouse = LocalPlayer:GetMouse()
 local Camera = workspace.CurrentCamera
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "AditzMods_UltraV4"
+ScreenGui.Name = "AditzMods"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -127,7 +127,7 @@ local Watermark = Instance.new("TextLabel")
 Watermark.Size = UDim2.new(1, 0, 0, 28)
 Watermark.Position = UDim2.new(0, 0, 1, -28)
 Watermark.BackgroundColor3 = PanelColor
-Watermark.Text = "* MAIN ENGINE SYSTEM ACTIVE *"
+Watermark.Text = "* SYSTEM BY YT ADITYABRR *"
 Watermark.TextColor3 = Color3.fromRGB(200, 150, 255)
 Watermark.Font = Enum.Font.GothamBold
 Watermark.TextSize = 11
