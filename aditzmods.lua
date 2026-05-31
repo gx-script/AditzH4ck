@@ -2,21 +2,16 @@ local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
+local VirtualUser = game:GetService("VirtualUser")
 local Mouse = LocalPlayer:GetMouse()
 local Camera = workspace.CurrentCamera
 
 local currentLang = "ID"
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "AditDosHub_Fixed"
+ScreenGui.Name = "AditDosHub_FinalWork"
 ScreenGui.ResetOnSpawn = false
-
-local function GetSafeParent()
-    local success, core = pcall(function() return game:GetService("CoreGui") end)
-    if success and core then return core end
-    return LocalPlayer:WaitForChild("PlayerGui")
-end
-ScreenGui.Parent = GetSafeParent()
+ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
 local ThemeColor = Color3.fromRGB(150, 30, 255)
 local BGColor = Color3.fromRGB(11, 8, 20)
@@ -29,7 +24,7 @@ MainFrame.Position = UDim2.new(0.5, -260, 0.4, -170)
 MainFrame.BackgroundColor3 = BGColor
 MainFrame.BorderSizePixel = 0
 MainFrame.ClipsDescendants = true
-MainFrame.BackgroundTransparency = 1
+MainFrame.BackgroundTransparency = 0.05
 MainFrame.Parent = ScreenGui
 
 local UICorner = Instance.new("UICorner")
@@ -39,13 +34,7 @@ UICorner.Parent = MainFrame
 local UIStroke = Instance.new("UIStroke")
 UIStroke.Color = ThemeColor
 UIStroke.Thickness = 2.5
-UIStroke.Transparency = 1
 UIStroke.Parent = MainFrame
-
-spawn(function()
-    TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 0.05}):Play()
-    TweenService:Create(UIStroke, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Transparency = 0}):Play()
-end)
 
 spawn(function()
     while task.wait(0.05) do
@@ -133,37 +122,23 @@ MiniIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
 MiniIcon.Font = Enum.Font.GothamBold
 MiniIcon.TextSize = 16
 MiniIcon.Visible = false
-MiniIcon.BackgroundTransparency = 1
 MiniIcon.Parent = ScreenGui
 Instance.new("UICorner", MiniIcon).CornerRadius = UDim.new(0, 28)
 local MiniStroke = Instance.new("UIStroke", MiniIcon)
 MiniStroke.Color = ThemeColor
 MiniStroke.Thickness = 2.5
-MiniStroke.Transparency = 1
 
 MiniBtn.MouseButton1Click:Connect(function()
-    TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1}):Play()
-    TweenService:Create(UIStroke, TweenInfo.new(0.2), {Transparency = 1}):Play()
-    task.wait(0.25)
     MainFrame.Visible = false
     MiniIcon.Visible = true
-    TweenService:Create(MiniIcon, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 0.1}):Play()
-    TweenService:Create(MiniStroke, TweenInfo.new(0.3), {Transparency = 0}):Play()
 end)
 
 MiniIcon.MouseButton1Click:Connect(function()
-    TweenService:Create(MiniIcon, TweenInfo.new(0.2), {BackgroundTransparency = 1}):Play()
-    TweenService:Create(MiniStroke, TweenInfo.new(0.2), {Transparency = 1}):Play()
-    task.wait(0.15)
     MiniIcon.Visible = false
     MainFrame.Visible = true
-    TweenService:Create(MainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 520, 0, 340), BackgroundTransparency = 0.05}):Play()
-    TweenService:Create(UIStroke, TweenInfo.new(0.4), {Transparency = 0}):Play()
 end)
 
 CloseBtn.MouseButton1Click:Connect(function()
-    TweenService:Create(MainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1}):Play()
-    task.wait(0.2)
     ScreenGui:Destroy()
 end)
 
@@ -179,11 +154,10 @@ ContentContainer.Position = UDim2.new(0, 153, 0, 55)
 ContentContainer.BackgroundTransparency = 1
 ContentContainer.Parent = MainFrame
 
-local Tabs = {"COMBAT", "MOVEMENT", "VISUAL", "SETTINGS"}
 local Pages = {}
 local TabButtons = {}
 
-for i, tabName in ipairs(Tabs) do
+local function CreatePage(name, order)
     local Page = Instance.new("ScrollingFrame")
     Page.Size = UDim2.new(1, 0, 1, 0)
     Page.BackgroundTransparency = 1
@@ -191,9 +165,8 @@ for i, tabName in ipairs(Tabs) do
     Page.ScrollBarThickness = 3
     Page.ScrollBarImageColor3 = ThemeColor
     Page.Visible = false
-    if string.match(tostring(i), "1") then Page.Visible = true end
     Page.Parent = ContentContainer
-    Pages[tabName] = Page
+    Pages[name] = Page
     
     local UIList = Instance.new("UIListLayout")
     UIList.Padding = UDim.new(0, 9)
@@ -201,24 +174,37 @@ for i, tabName in ipairs(Tabs) do
 
     local TabBtn = Instance.new("TextButton")
     TabBtn.Size = UDim2.new(1, 0, 0, 38)
-    TabBtn.Position = UDim2.new(0, 0, 0, (i-1)*44)
+    TabBtn.Position = UDim2.new(0, 0, 0, order * 44)
     TabBtn.BackgroundColor3 = PanelColor
-    if string.match(tostring(i), "1") then TabBtn.BackgroundColor3 = ThemeColor end
-    TabBtn.Text = tabName
+    TabBtn.Text = name
     TabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     TabBtn.Font = Enum.Font.GothamBold
     TabBtn.TextSize = 12
     TabBtn.Parent = TabContainer
-    TabButtons[tabName] = TabBtn
     Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 8)
+    TabButtons[name] = TabBtn
 
     TabBtn.MouseButton1Click:Connect(function()
-        for _, p in pairs(Pages) do p.Visible = false end
-        for _, btn in pairs(TabButtons) do btn.BackgroundColor3 = PanelColor end
+        Pages["COMBAT"].Visible = false
+        Pages["MOVEMENT"].Visible = false
+        Pages["VISUAL"].Visible = false
+        Pages["SETTINGS"].Visible = false
+        TabButtons["COMBAT"].BackgroundColor3 = PanelColor
+        TabButtons["MOVEMENT"].BackgroundColor3 = PanelColor
+        TabButtons["VISUAL"].BackgroundColor3 = PanelColor
+        TabButtons["SETTINGS"].BackgroundColor3 = PanelColor
         Page.Visible = true
-        TweenService:Create(TabBtn, TweenInfo.new(0.2), {BackgroundColor3 = ThemeColor}):Play()
+        TabBtn.BackgroundColor3 = ThemeColor
     end)
 end
+
+CreatePage("COMBAT", 0)
+CreatePage("MOVEMENT", 1)
+CreatePage("VISUAL", 2)
+CreatePage("SETTINGS", 3)
+
+Pages["COMBAT"].Visible = true
+TabButtons["COMBAT"].BackgroundColor3 = ThemeColor
 
 local function CreateToggle(parent, text, callback)
     local Frame = Instance.new("Frame")
@@ -257,13 +243,13 @@ local function CreateToggle(parent, text, callback)
     Switch.MouseButton1Click:Connect(function()
         if state.value then
             state.value = false
-            TweenService:Create(Dot, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {Position = UDim2.new(0, 3, 0, 3)}):Play()
-            TweenService:Create(Switch, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(40, 35, 55)}):Play()
+            Dot.Position = UDim2.new(0, 3, 0, 3)
+            Switch.BackgroundColor3 = Color3.fromRGB(40, 35, 55)
             callback(false)
         else
             state.value = true
-            TweenService:Create(Dot, TweenInfo.new(0.2, Enum.EasingStyle.Quad), {Position = UDim2.new(1, -21, 0, 3)}):Play()
-            TweenService:Create(Switch, TweenInfo.new(0.2), {BackgroundColor3 = ActiveColor}):Play()
+            Dot.Position = UDim2.new(1, -21, 0, 3)
+            Switch.BackgroundColor3 = ActiveColor
             callback(true)
         end
     end)
@@ -286,11 +272,7 @@ local function CreateButton(parent, text, callback)
     Stroke.Transparency = 0.6
 
     Btn.MouseButton1Click:Connect(function()
-        local origColor = Btn.BackgroundColor3
-        TweenService:Create(Btn, TweenInfo.new(0.1), {BackgroundColor3 = ActiveColor}):Play()
         callback()
-        task.wait(0.1)
-        TweenService:Create(Btn, TweenInfo.new(0.2), {BackgroundColor3 = origColor}):Play()
     end)
 end
 
@@ -302,6 +284,36 @@ CreateToggle(Pages["COMBAT"], "Silent Aim", function(val) SilentAimStatus.Active
 CreateToggle(Pages["COMBAT"], "Body Headshot", function(val) BodyHeadshotStatus.Active = val end)
 CreateToggle(Pages["COMBAT"], "Auto Head", function(val) AutoHeadStatus.Active = val end)
 
+local function GetClosestPlayer()
+    local target = nil
+    local maxDist = math.huge
+    for _, p in pairs(Players:GetPlayers()) do
+        if p.Name ~= LocalPlayer.Name then
+            if p.Character then
+                local part = p.Character:FindFirstChild("Head")
+                if BodyHeadshotStatus.Active then part = p.Character:FindFirstChild("HumanoidRootPart") end
+                if part then
+                    local pos, onScreen = Camera:WorldToScreenPoint(part.Position)
+                    if onScreen then
+                        local dist = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(pos.X, pos.Y)).Magnitude
+                        if dist < maxDist then maxDist = dist; target = part end
+                    end
+                end
+            end
+        end
+    end
+    return target
+end
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    if SilentAimStatus.Active then
+        local target = GetClosestPlayer()
+        if target then
+            Camera.CFrame = CFrame.new(Camera.CFrame.Position, target.Position)
+        end
+    end
+end)
+
 local AutoFireActive = {State = false}
 CreateToggle(Pages["COMBAT"], "Auto Fire", function(val) 
     AutoFireActive.State = val 
@@ -312,7 +324,9 @@ CreateToggle(Pages["COMBAT"], "Auto Fire", function(val)
                 local pName = Mouse.Target.Parent.Name
                 if pName ~= LocalPlayer.Name then
                     if Mouse.Target.Parent:FindFirstChild("Humanoid") then
-                        mouse1click()
+                        VirtualUser:Button1Down(Vector2.new(0,0))
+                        task.wait(0.05)
+                        VirtualUser:Button1Up(Vector2.new(0,0))
                     end
                 end
             end
@@ -339,41 +353,6 @@ CreateButton(Pages["COMBAT"], "Teleport Mark", function()
         end
     end
 end)
-
-local mt = getrawmetatable(game)
-local old = mt.__namecall
-setreadonly(mt, false)
-mt.__namecall = newcclosure(function(self, ...)
-    local method = getnamecallmethod()
-    local args = {...}
-    if SilentAimStatus.Active then
-        if string.match(method, "Raycast") or string.match(method, "FindPartOnRay") then
-            local target = nil
-            local maxDist = math.huge
-            for _, p in pairs(Players:GetPlayers()) do
-                if p.Name ~= LocalPlayer.Name then
-                    if p.Character then
-                        if p.Character:FindFirstChild("Head") then
-                            local pos, onScreen = Camera:WorldToScreenPoint(p.Character.Head.Position)
-                            if onScreen then
-                                local dist = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(pos.X, pos.Y)).Magnitude
-                                if dist < maxDist then maxDist = dist; target = p end
-                            end
-                        end
-                    end
-                end
-            end
-            if target then
-                local partName = "Head"
-                if BodyHeadshotStatus.Active then partName = "HumanoidRootPart" end
-                if AutoHeadStatus.Active then partName = "Head" end
-                args[1] = Ray.new(Camera.CFrame.Position, (target.Character[partName].Position - Camera.CFrame.Position).Unit * 1000)
-            end
-        end
-    end
-    return old(self, unpack(args))
-end)
-setreadonly(mt, true)
 
 local SpeedActive = {State = false}
 CreateToggle(Pages["MOVEMENT"], "Speed Max", function(val)
