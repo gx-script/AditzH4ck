@@ -9,7 +9,7 @@ local Mouse = LocalPlayer:GetMouse()
 local Camera = workspace.CurrentCamera
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "AditzMods"
+ScreenGui.Name = "AditzMods_V5_Final"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -21,8 +21,8 @@ local ActiveColor = Color3.fromRGB(180, 70, 255)
 local OriginalMaterials = {}
 
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 520, 0, 360)
-MainFrame.Position = UDim2.new(0.5, -260, 0.4, -180)
+MainFrame.Size = UDim2.new(0, 540, 0, 360)
+MainFrame.Position = UDim2.new(0.5, -270, 0.4, -180)
 MainFrame.BackgroundColor3 = BGColor
 MainFrame.BorderSizePixel = 0
 MainFrame.ClipsDescendants = true
@@ -75,7 +75,7 @@ TopCorner.Parent = TopBar
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(0.5, 0, 1, 0)
 Title.Position = UDim2.new(0, 18, 0, 0)
-Title.Text = "* ADITZMODS ENGINE | v4"
+Title.Text = "Yt @Adityabrr"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 15
@@ -86,7 +86,7 @@ Title.Parent = TopBar
 local MonitorLabel = Instance.new("TextLabel")
 MonitorLabel.Size = UDim2.new(0.35, 0, 1, 0)
 MonitorLabel.Position = UDim2.new(0.65, -95, 0, 0)
-MonitorLabel.Text = "FPS: 60 | PING: 0ms"
+MonitorLabel.Text = "FPS: -- | PING: --"
 MonitorLabel.TextColor3 = Color3.fromRGB(0, 255, 150)
 MonitorLabel.Font = Enum.Font.Code
 MonitorLabel.TextSize = 12
@@ -127,7 +127,7 @@ local Watermark = Instance.new("TextLabel")
 Watermark.Size = UDim2.new(1, 0, 0, 28)
 Watermark.Position = UDim2.new(0, 0, 1, -28)
 Watermark.BackgroundColor3 = PanelColor
-Watermark.Text = "* SYSTEM BY YT ADITYABRR *"
+Watermark.Text = "Yt @Adityabrr"
 Watermark.TextColor3 = Color3.fromRGB(200, 150, 255)
 Watermark.Font = Enum.Font.GothamBold
 Watermark.TextSize = 11
@@ -152,24 +152,69 @@ MiniBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false; MiniIcon
 MiniIcon.MouseButton1Click:Connect(function() MiniIcon.Visible = false; MainFrame.Visible = true end)
 CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
 
-local ContentContainer = Instance.new("ScrollingFrame")
-ContentContainer.Size = UDim2.new(1, -24, 1, -95)
-ContentContainer.Position = UDim2.new(0, 12, 0, 55)
+local TabContainer = Instance.new("Frame")
+TabContainer.Size = UDim2.new(0, 130, 1, -85)
+TabContainer.Position = UDim2.new(0, 12, 0, 55)
+TabContainer.BackgroundTransparency = 1
+TabContainer.Parent = MainFrame
+
+local ContentContainer = Instance.new("Frame")
+ContentContainer.Size = UDim2.new(1, -165, 1, -85)
+ContentContainer.Position = UDim2.new(0, 153, 0, 55)
 ContentContainer.BackgroundTransparency = 1
-ContentContainer.CanvasSize = UDim2.new(0, 0, 2.5, 0)
-ContentContainer.ScrollBarThickness = 4
-ContentContainer.ScrollBarImageColor3 = ThemeColor
 ContentContainer.Parent = MainFrame
 
-local UIList = Instance.new("UIListLayout")
-UIList.Padding = UDim.new(0, 8)
-UIList.Parent = ContentContainer
+local Pages = {}
+local TabButtons = {}
 
-local function CreateToggle(text, callback)
+local function CreatePage(name, order)
+    local Page = Instance.new("ScrollingFrame")
+    Page.Size = UDim2.new(1, 0, 1, 0)
+    Page.BackgroundTransparency = 1
+    Page.CanvasSize = UDim2.new(0, 0, 2.0, 0)
+    Page.ScrollBarThickness = 3
+    Page.ScrollBarImageColor3 = ThemeColor
+    Page.Visible = false
+    Page.Parent = ContentContainer
+    Pages[name] = Page
+    
+    local UIList = Instance.new("UIListLayout")
+    UIList.Padding = UDim.new(0, 8)
+    UIList.Parent = Page
+
+    local TabBtn = Instance.new("TextButton")
+    TabBtn.Size = UDim2.new(1, 0, 0, 38)
+    TabBtn.Position = UDim2.new(0, 0, 0, order * 44)
+    TabBtn.BackgroundColor3 = PanelColor
+    TabBtn.Text = name
+    TabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TabBtn.Font = Enum.Font.GothamBold
+    TabBtn.TextSize = 12
+    TabBtn.Parent = TabContainer
+    Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 8)
+    TabButtons[name] = TabBtn
+
+    TabBtn.MouseButton1Click:Connect(function()
+        for _, p in pairs(Pages) do p.Visible = false end
+        for _, b in pairs(TabButtons) do b.BackgroundColor3 = PanelColor end
+        Page.Visible = true
+        TabBtn.BackgroundColor3 = ThemeColor
+    end)
+end
+
+CreatePage("MAIN", 0)
+CreatePage("COMBAT", 1)
+CreatePage("MOVEMENT", 2)
+CreatePage("VISUAL & MISC", 3)
+
+Pages["MAIN"].Visible = true
+TabButtons["MAIN"].BackgroundColor3 = ThemeColor
+
+local function CreateToggle(parent, text, callback)
     local Frame = Instance.new("Frame")
     Frame.Size = UDim2.new(1, -10, 0, 44)
     Frame.BackgroundColor3 = PanelColor
-    Frame.Parent = ContentContainer
+    Frame.Parent = parent
     Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 8)
 
     local Label = Instance.new("TextLabel")
@@ -222,7 +267,10 @@ local Config = {
     AutoFire = false,
     Speed = false,
     Jump = false,
+    Noclip = false,
     Fly = false,
+    Hologram = false,
+    Minecraft = false,
     AntiBan = false
 }
 
@@ -247,11 +295,46 @@ local function GetClosestTarget()
     return target
 end
 
-CreateToggle("Enable Function", function(val) Config.Master = val end)
-CreateToggle("Auto Headshot", function(val) Config.AutoHead = val end)
-CreateToggle("Body Headshot", function(val) Config.BodyHead = val end)
-CreateToggle("Silent Aim", function(val) Config.Silent = val end)
+-- TAB 1: MAIN
+CreateToggle(Pages["MAIN"], "Enable Function", function(val) Config.Master = val end)
+CreateToggle(Pages["MAIN"], "Anti Ban", function(val)
+    Config.AntiBan = val
+    if val then
+        local meta = getrawmetatable(game)
+        if meta then
+            setreadonly(meta, false)
+            local old = meta.__index
+            meta.__index = newcclosure(function(t, k)
+                if tostring(k) == "Crash" or tostring(k) == "Kick" then return function() return nil end end
+                return old(t, k)
+            end)
+            setreadonly(meta, true)
+        end
+    end
+end)
 
+-- TAB 2: COMBAT
+CreateToggle(Pages["COMBAT"], "Silent Aim (Raycast Redirect)", function(val) Config.Silent = val end)
+CreateToggle(Pages["COMBAT"], "Auto Headshot", function(val) Config.AutoHead = val end)
+CreateToggle(Pages["COMBAT"], "Body Headshot", function(val) Config.BodyHead = val end)
+CreateToggle(Pages["COMBAT"], "Auto Fire", function(val)
+    Config.AutoFire = val
+    spawn(function()
+        while Config.AutoFire do
+            task.wait(0.07)
+            if Config.Master then
+                local target = GetClosestTarget()
+                if target then
+                    VirtualUser:Button1Down(Vector2.new(0,0))
+                    task.wait(0.02)
+                    VirtualUser:Button1Up(Vector2.new(0,0))
+                end
+            end
+        end
+    end)
+end)
+
+-- SILENT AIM MECHANISM (Redirecting Index Mouse / Tool Hit)
 local HookMeta = getrawmetatable(game)
 local OldIndex = HookMeta.__index
 setreadonly(HookMeta, false)
@@ -266,24 +349,8 @@ HookMeta.__index = newcclosure(function(self, key)
 end)
 setreadonly(HookMeta, true)
 
-CreateToggle("Auto Fire", function(val)
-    Config.AutoFire = val
-    spawn(function()
-        while Config.AutoFire do
-            task.wait(0.08)
-            if Config.Master then
-                local target = GetClosestTarget()
-                if target then
-                    VirtualUser:Button1Down(Vector2.new(0,0))
-                    task.wait(0.02)
-                    VirtualUser:Button1Up(Vector2.new(0,0))
-                end
-            end
-        end
-    end)
-end)
-
-CreateToggle("Speed Max", function(val)
+-- TAB 3: MOVEMENT
+CreateToggle(Pages["MOVEMENT"], "Speed Max", function(val)
     Config.Speed = val
     spawn(function()
         while Config.Speed do
@@ -298,16 +365,13 @@ CreateToggle("Speed Max", function(val)
     end)
 end)
 
-CreateToggle("Jumpaclip", function(val)
+CreateToggle(Pages["MOVEMENT"], "Jump Max", function(val)
     Config.Jump = val
     spawn(function()
         while Config.Jump do
             task.wait(0.05)
             if Config.Master and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
                 LocalPlayer.Character.Humanoid.JumpPower = 250
-                for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
-                    if part:IsA("BasePart") then part.CanCollide = false end
-                end
             end
         end
         if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
@@ -316,7 +380,21 @@ CreateToggle("Jumpaclip", function(val)
     end)
 end)
 
-CreateToggle("Fly", function(val)
+CreateToggle(Pages["MOVEMENT"], "Noclip", function(val)
+    Config.Noclip = val
+    spawn(function()
+        while Config.Noclip do
+            task.wait(0.05)
+            if Config.Master and LocalPlayer.Character then
+                for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then part.CanCollide = false end
+                end
+            end
+        end
+    end)
+end)
+
+CreateToggle(Pages["MOVEMENT"], "Fly", function(val)
     Config.Fly = val
     spawn(function()
         while Config.Fly do
@@ -334,36 +412,61 @@ CreateToggle("Fly", function(val)
     end)
 end)
 
-CreateToggle("Minecraft Graphic", function(val)
+-- TAB 4: VISUAL & MISC
+CreateToggle(Pages["VISUAL & MISC"], "Hologram Target", function(val)
+    Config.Hologram = val
+    spawn(function()
+        while Config.Hologram do
+            task.wait(0.5)
+            if Config.Master then
+                for _, p in pairs(Players:GetPlayers()) do
+                    if p.Name ~= LocalPlayer.Name and p.Character then
+                        for _, part in pairs(p.Character:GetChildren()) do
+                            if part:IsA("BasePart") and not part:FindFirstChild("HoloInlay") then
+                                local bbo = Instance.new("BoxHandleAdornment")
+                                bbo.Name = "HoloInlay"
+                                bbo.Size = part.Size + Vector3.new(0.05, 0.05, 0.05)
+                                bbo.AlwaysOnTop = true
+                                bbo.ZIndex = 5
+                                bbo.Color3 = Color3.fromRGB(0, 200, 255)
+                                bbo.Transparency = 0.6
+                                bbo.Adornee = part
+                                bbo.Parent = part
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        for _, p in pairs(Players:GetPlayers()) do
+            if p.Character then
+                for _, part in pairs(p.Character:GetDescendants()) do
+                    if part.Name == "HoloInlay" then part:Destroy() end
+                end
+            end
+        end
+    end)
+end)
+
+CreateToggle(Pages["VISUAL & MISC"], "Minecraft Graphic", function(val)
+    Config.Minecraft = val
     if val then
         if Config.Master then
             game:GetService("Lighting").GlobalShadows = false
             for _, obj in pairs(workspace:GetDescendants()) do
                 if obj:IsA("Texture") or obj:IsA("Decal") then
-                    OriginalMaterials[obj] = {Parent = obj.Parent, Class = obj.ClassName}
-                    obj:Destroy()
+                    OriginalMaterials[obj] = {Parent = obj.Parent, Name = obj.Name, Asset = obj.Texture}
+                    obj.Parent = nil
                 end
             end
         end
     else
         game:GetService("Lighting").GlobalShadows = true
-    end
-end)
-
-CreateToggle("Anti Ban", function(val)
-    Config.AntiBan = val
-    if val then
-        local meta = getrawmetatable(game)
-        if meta then
-            setreadonly(meta, false)
-            local old = meta.__index
-            meta.__index = newcclosure(function(t, k)
-                if tostring(k) == "Crash" or tostring(k) == "Kick" then
-                    return function() return nil end
-                end
-                return old(t, k)
-            end)
-            setreadonly(meta, true)
+        for obj, data in pairs(OriginalMaterials) do
+            if obj then
+                obj.Parent = data.Parent
+            end
         end
+        table.clear(OriginalMaterials)
     end
 end)
