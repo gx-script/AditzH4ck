@@ -3,13 +3,12 @@ local LocalPlayer = Players.LocalPlayer
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local VirtualUser = game:GetService("VirtualUser")
+local RunService = game:GetService("RunService")
 local Mouse = LocalPlayer:GetMouse()
 local Camera = workspace.CurrentCamera
 
-local currentLang = "ID"
-
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "AditDosHub_FinalWork"
+ScreenGui.Name = "AditzMods_UltraV3"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
@@ -73,7 +72,7 @@ TopCorner.Parent = TopBar
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(0.6, 0, 1, 0)
 Title.Position = UDim2.new(0, 18, 0, 0)
-Title.Text = "* ADITDOS ENGINE | VIP V3"
+Title.Text = "* ADITZMODS ENGINE | PREMIUM v3"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.GothamBold
 Title.TextSize = 16
@@ -107,7 +106,7 @@ local Watermark = Instance.new("TextLabel")
 Watermark.Size = UDim2.new(1, 0, 0, 28)
 Watermark.Position = UDim2.new(0, 0, 1, -28)
 Watermark.BackgroundColor3 = PanelColor
-Watermark.Text = "* ACCESS GRANTED TO ADITYABRR *"
+Watermark.Text = "* MAIN ENGINE SYSTEM ACTIVE *"
 Watermark.TextColor3 = Color3.fromRGB(200, 150, 255)
 Watermark.Font = Enum.Font.GothamBold
 Watermark.TextSize = 11
@@ -128,89 +127,28 @@ local MiniStroke = Instance.new("UIStroke", MiniIcon)
 MiniStroke.Color = ThemeColor
 MiniStroke.Thickness = 2.5
 
-MiniBtn.MouseButton1Click:Connect(function()
-    MainFrame.Visible = false
-    MiniIcon.Visible = true
-end)
+MiniBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false; MiniIcon.Visible = true end)
+MiniIcon.MouseButton1Click:Connect(function() MiniIcon.Visible = false; MainFrame.Visible = true end)
+CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
 
-MiniIcon.MouseButton1Click:Connect(function()
-    MiniIcon.Visible = false
-    MainFrame.Visible = true
-end)
-
-CloseBtn.MouseButton1Click:Connect(function()
-    ScreenGui:Destroy()
-end)
-
-local TabContainer = Instance.new("Frame")
-TabContainer.Size = UDim2.new(0, 130, 1, -85)
-TabContainer.Position = UDim2.new(0, 12, 0, 55)
-TabContainer.BackgroundTransparency = 1
-TabContainer.Parent = MainFrame
-
-local ContentContainer = Instance.new("Frame")
-ContentContainer.Size = UDim2.new(1, -165, 1, -85)
-ContentContainer.Position = UDim2.new(0, 153, 0, 55)
+local ContentContainer = Instance.new("ScrollingFrame")
+ContentContainer.Size = UDim2.new(1, -24, 1, -90)
+ContentContainer.Position = UDim2.new(0, 12, 0, 55)
 ContentContainer.BackgroundTransparency = 1
+ContentContainer.CanvasSize = UDim2.new(0, 0, 2.2, 0)
+ContentContainer.ScrollBarThickness = 4
+ContentContainer.ScrollBarImageColor3 = ThemeColor
 ContentContainer.Parent = MainFrame
 
-local Pages = {}
-local TabButtons = {}
+local UIList = Instance.new("UIListLayout")
+UIList.Padding = UDim.new(0, 8)
+UIList.Parent = ContentContainer
 
-local function CreatePage(name, order)
-    local Page = Instance.new("ScrollingFrame")
-    Page.Size = UDim2.new(1, 0, 1, 0)
-    Page.BackgroundTransparency = 1
-    Page.CanvasSize = UDim2.new(0, 0, 1.8, 0)
-    Page.ScrollBarThickness = 3
-    Page.ScrollBarImageColor3 = ThemeColor
-    Page.Visible = false
-    Page.Parent = ContentContainer
-    Pages[name] = Page
-    
-    local UIList = Instance.new("UIListLayout")
-    UIList.Padding = UDim.new(0, 9)
-    UIList.Parent = Page
-
-    local TabBtn = Instance.new("TextButton")
-    TabBtn.Size = UDim2.new(1, 0, 0, 38)
-    TabBtn.Position = UDim2.new(0, 0, 0, order * 44)
-    TabBtn.BackgroundColor3 = PanelColor
-    TabBtn.Text = name
-    TabBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    TabBtn.Font = Enum.Font.GothamBold
-    TabBtn.TextSize = 12
-    TabBtn.Parent = TabContainer
-    Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 8)
-    TabButtons[name] = TabBtn
-
-    TabBtn.MouseButton1Click:Connect(function()
-        Pages["COMBAT"].Visible = false
-        Pages["MOVEMENT"].Visible = false
-        Pages["VISUAL"].Visible = false
-        Pages["SETTINGS"].Visible = false
-        TabButtons["COMBAT"].BackgroundColor3 = PanelColor
-        TabButtons["MOVEMENT"].BackgroundColor3 = PanelColor
-        TabButtons["VISUAL"].BackgroundColor3 = PanelColor
-        TabButtons["SETTINGS"].BackgroundColor3 = PanelColor
-        Page.Visible = true
-        TabBtn.BackgroundColor3 = ThemeColor
-    end)
-end
-
-CreatePage("COMBAT", 0)
-CreatePage("MOVEMENT", 1)
-CreatePage("VISUAL", 2)
-CreatePage("SETTINGS", 3)
-
-Pages["COMBAT"].Visible = true
-TabButtons["COMBAT"].BackgroundColor3 = ThemeColor
-
-local function CreateToggle(parent, text, callback)
+local function CreateToggle(text, callback)
     local Frame = Instance.new("Frame")
-    Frame.Size = UDim2.new(1, -12, 0, 44)
+    Frame.Size = UDim2.new(1, -10, 0, 44)
     Frame.BackgroundColor3 = PanelColor
-    Frame.Parent = parent
+    Frame.Parent = ContentContainer
     Instance.new("UICorner", Frame).CornerRadius = UDim.new(0, 8)
 
     local Label = Instance.new("TextLabel")
@@ -255,49 +193,32 @@ local function CreateToggle(parent, text, callback)
     end)
 end
 
-local function CreateButton(parent, text, callback)
-    local Btn = Instance.new("TextButton")
-    Btn.Size = UDim2.new(1, -12, 0, 38)
-    Btn.BackgroundColor3 = PanelColor
-    Btn.Text = text
-    Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Btn.Font = Enum.Font.GothamBold
-    Btn.TextSize = 13
-    Btn.Parent = parent
-    Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 8)
+local Config = {
+    Master = false,
+    AutoHead = false,
+    BodyHead = false,
+    Silent = false,
+    AutoFire = false,
+    Speed = false,
+    Jump = false,
+    Fly = false,
+    AntiBan = false
+}
 
-    local Stroke = Instance.new("UIStroke", Btn)
-    Stroke.Color = ThemeColor
-    Stroke.Thickness = 1
-    Stroke.Transparency = 0.6
-
-    Btn.MouseButton1Click:Connect(function()
-        callback()
-    end)
-end
-
-local SilentAimStatus = {Active = false}
-local BodyHeadshotStatus = {Active = false}
-local AutoHeadStatus = {Active = false}
-
-CreateToggle(Pages["COMBAT"], "Silent Aim", function(val) SilentAimStatus.Active = val end)
-CreateToggle(Pages["COMBAT"], "Body Headshot", function(val) BodyHeadshotStatus.Active = val end)
-CreateToggle(Pages["COMBAT"], "Auto Head", function(val) AutoHeadStatus.Active = val end)
-
-local function GetClosestPlayer()
+local function GetClosestTarget()
     local target = nil
     local maxDist = math.huge
     for _, p in pairs(Players:GetPlayers()) do
-        if p.Name ~= LocalPlayer.Name then
-            if p.Character then
-                local part = p.Character:FindFirstChild("Head")
-                if BodyHeadshotStatus.Active then part = p.Character:FindFirstChild("HumanoidRootPart") end
-                if part then
-                    local pos, onScreen = Camera:WorldToScreenPoint(part.Position)
-                    if onScreen then
-                        local dist = (Vector2.new(Mouse.X, Mouse.Y) - Vector2.new(pos.X, pos.Y)).Magnitude
-                        if dist < maxDist then maxDist = dist; target = part end
-                    end
+        if p.Name ~= LocalPlayer.Name and p.Character then
+            local part = p.Character:FindFirstChild("Head")
+            if Config.BodyHead then part = p.Character:FindFirstChild("HumanoidRootPart") end
+            if Config.AutoHead then part = p.Character:FindFirstChild("Head") end
+            
+            if part then
+                local distance = (LocalPlayer.Character.HumanoidRootPart.Position - part.Position).Magnitude
+                if distance < maxDist then
+                    maxDist = distance
+                    target = part
                 end
             end
         end
@@ -305,142 +226,115 @@ local function GetClosestPlayer()
     return target
 end
 
-game:GetService("RunService").RenderStepped:Connect(function()
-    if SilentAimStatus.Active then
-        local target = GetClosestPlayer()
+CreateToggle("Enable Function", function(val) Config.Master = val end)
+CreateToggle("Auto Headshot", function(val) Config.AutoHead = val end)
+CreateToggle( "Body Headshot", function(val) Config.BodyHead = val end)
+
+CreateToggle("Silent Aim", function(val) 
+    Config.Silent = val 
+end)
+
+RunService.RenderStepped:Connect(function()
+    if Config.Master and Config.Silent then
+        local target = GetClosestTarget()
         if target then
             Camera.CFrame = CFrame.new(Camera.CFrame.Position, target.Position)
         end
     end
 end)
 
-local AutoFireActive = {State = false}
-CreateToggle(Pages["COMBAT"], "Auto Fire", function(val) 
-    AutoFireActive.State = val 
+CreateToggle("Auto Fire", function(val)
+    Config.AutoFire = val
     spawn(function()
-        while AutoFireActive.State do
-            task.wait(0.1)
-            if Mouse.Target then
-                local pName = Mouse.Target.Parent.Name
-                if pName ~= LocalPlayer.Name then
-                    if Mouse.Target.Parent:FindFirstChild("Humanoid") then
-                        VirtualUser:Button1Down(Vector2.new(0,0))
-                        task.wait(0.05)
-                        VirtualUser:Button1Up(Vector2.new(0,0))
-                    end
+        while Config.AutoFire do
+            task.wait(0.08)
+            if Config.Master then
+                local target = GetClosestTarget()
+                if target then
+                    VirtualUser:Button1Down(Vector2.new(0,0))
+                    task.wait(0.02)
+                    VirtualUser:Button1Up(Vector2.new(0,0))
                 end
             end
         end
     end)
 end)
 
-CreateButton(Pages["COMBAT"], "Auto Clear Map Objects", function()
-    for _, obj in pairs(workspace:GetChildren()) do
-        if obj:IsA("Debris") then obj:Destroy() end
-        if string.match(obj.Name, "Corpse") then obj:Destroy() end
-    end
-end)
-
-CreateButton(Pages["COMBAT"], "Teleport Mark", function()
-    for _, p in pairs(Players:GetPlayers()) do
-        if p.Name ~= LocalPlayer.Name then
-            if p.Character then
-                if p.Character:FindFirstChild("HumanoidRootPart") then
-                    LocalPlayer.Character.HumanoidRootPart.CFrame = p.Character.HumanoidRootPart.CFrame * CFrame.new(0,0,3)
-                    break
-                end
-            end
-        end
-    end
-end)
-
-local SpeedActive = {State = false}
-CreateToggle(Pages["MOVEMENT"], "Speed Max", function(val)
-    SpeedActive.State = val
+CreateToggle("Speed Max", function(val)
+    Config.Speed = val
     spawn(function()
-        while SpeedActive.State do
+        while Config.Speed do
             task.wait(0.05)
-            pcall(function() LocalPlayer.Character.Humanoid.WalkSpeed = 150 end)
+            if Config.Master and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                LocalPlayer.Character.Humanoid.WalkSpeed = 150
+            end
         end
-        pcall(function() LocalPlayer.Character.Humanoid.WalkSpeed = 16 end)
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+            LocalPlayer.Character.Humanoid.WalkSpeed = 16
+        end
     end)
 end)
 
-local JumpActive = {State = false}
-CreateToggle(Pages["MOVEMENT"], "Jump Max", function(val)
-    JumpActive.State = val
+CreateToggle("Jumpaclip", function(val)
+    Config.Jump = val
     spawn(function()
-        while JumpActive.State do
+        while Config.Jump do
             task.wait(0.05)
-            pcall(function() LocalPlayer.Character.Humanoid.JumpPower = 250 end)
+            if Config.Master and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                LocalPlayer.Character.Humanoid.JumpPower = 250
+                LocalPlayer.Character.Humanoid.Clip = false
+                for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then part.CanCollide = false end
+                end
+            end
         end
-        pcall(function() LocalPlayer.Character.Humanoid.JumpPower = 50 end)
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+            LocalPlayer.Character.Humanoid.JumpPower = 50
+        end
     end)
 end)
 
-local EspActive = {State = false}
-CreateToggle(Pages["VISUAL"], "Esp Line Box", function(val)
-    EspActive.State = val
-    for _, p in pairs(Players:GetPlayers()) do
-        if p.Name ~= LocalPlayer.Name then
-            if p.Character then
-                if EspActive.State then
-                    local hl = Instance.new("Highlight")
-                    hl.Name = "AditHighlight"
-                    hl.FillColor = ThemeColor
-                    hl.Parent = p.Character
-                else
-                    if p.Character:FindFirstChild("AditHighlight") then p.Character.AditHighlight:Destroy() end
+CreateToggle("Fly", function(val)
+    Config.Fly = val
+    spawn(function()
+        while Config.Fly do
+            task.wait(0.01)
+            if Config.Master and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local hrp = LocalPlayer.Character.HumanoidRootPart
+                hrp.Velocity = Vector3.new(0, 0.5, 0)
+                if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
+                    hrp.Velocity = Vector3.new(0, 60, 0)
+                elseif UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
+                    hrp.Velocity = Vector3.new(0, -60, 0)
                 end
             end
+        end
+    end)
+end)
+
+CreateToggle("Minecraft Graphic", function(val)
+    if val and Config.Master then
+        game:GetService("Lighting").GlobalShadows = false
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj:IsA("Texture") or obj:IsA("Decal") then obj:Destroy() end
         end
     end
 end)
 
-local HologramActive = {State = false}
-CreateToggle(Pages["VISUAL"], "Hologram", function(val)
-    HologramActive.State = val
-    for _, p in pairs(Players:GetPlayers()) do
-        if p.Name ~= LocalPlayer.Name then
-            if p.Character then
-                for _, part in pairs(p.Character:GetChildren()) do
-                    if part:IsA("BasePart") then 
-                        if HologramActive.State then
-                            part.Material = Enum.Material.ForceField
-                        else
-                            part.Material = Enum.Material.Plastic
-                        end
-                    end
+CreateToggle("Anti Ban", function(val)
+    Config.AntiBan = val
+    if val then
+        local meta = getrawmetatable(game)
+        if meta then
+            setreadonly(meta, false)
+            local old = meta.__index
+            meta.__index = newcclosure(function(t, k)
+                if tostring(k) == "Crash" or tostring(k) == "Kick" then
+                    return function() return nil end
                 end
-            end
+                return old(t, k)
+            end)
+            setreadonly(meta, true)
         end
     end
-end)
-
-CreateButton(Pages["VISUAL"], "Minecraft Graphic", function()
-    game:GetService("Lighting").GlobalShadows = false
-    for _, obj in pairs(workspace:GetDescendants()) do
-        if obj:IsA("Texture") then obj:Destroy() end
-        if obj:IsA("Decal") then obj:Destroy() end
-    end
-end)
-
-CreateButton(Pages["SETTINGS"], "Ubah Warna Acak", function()
-    local r = math.random(120, 255)
-    local g = math.random(60, 160)
-    local b = math.random(190, 255)
-    ThemeColor = Color3.fromRGB(r, g, b)
-    ActiveColor = Color3.fromRGB(math.clamp(r+20, 0, 255), math.clamp(g+20, 0, 255), 255)
-end)
-
-CreateButton(Pages["SETTINGS"], "Ganti Bahasa", function()
-    local nextLang = "ID"
-    if currentLang == "ID" then nextLang = "EN"
-    elseif currentLang == "EN" then nextLang = "ES"
-    elseif currentLang == "ES" then nextLang = "FR"
-    elseif currentLang == "FR" then nextLang = "FIL"
-    elseif currentLang == "FIL" then nextLang = "ID"
-    end
-    currentLang = nextLang
-    Title.Text = "* ADITDOS ENGINE " .. currentLang
 end)
