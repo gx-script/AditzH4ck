@@ -1,6 +1,5 @@
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local CoreGui = game:GetService("CoreGui")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local Mouse = LocalPlayer:GetMouse()
@@ -9,10 +8,15 @@ local Camera = workspace.CurrentCamera
 local currentLang = "ID"
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "AditDosHub_Premium"
+ScreenGui.Name = "AditDosHub_Fixed"
 ScreenGui.ResetOnSpawn = false
-pcall(function() ScreenGui.Parent = CoreGui end)
-if not ScreenGui.Parent then ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui") end
+
+local function GetSafeParent()
+    local success, core = pcall(function() return game:GetService("CoreGui") end)
+    if success and core then return core end
+    return LocalPlayer:WaitForChild("PlayerGui")
+end
+ScreenGui.Parent = GetSafeParent()
 
 local ThemeColor = Color3.fromRGB(150, 30, 255)
 local BGColor = Color3.fromRGB(11, 8, 20)
@@ -39,8 +43,8 @@ UIStroke.Transparency = 1
 UIStroke.Parent = MainFrame
 
 spawn(function()
-    TweenService:Create(MainFrame, TweenInfo.new(0.6, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 0.05}):Play()
-    TweenService:Create(UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Transparency = 0}):Play()
+    TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 0.05}):Play()
+    TweenService:Create(UIStroke, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Transparency = 0}):Play()
 end)
 
 spawn(function()
@@ -138,28 +142,28 @@ MiniStroke.Thickness = 2.5
 MiniStroke.Transparency = 1
 
 MiniBtn.MouseButton1Click:Connect(function()
-    TweenService:Create(MainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1}):Play()
-    TweenService:Create(UIStroke, TweenInfo.new(0.3), {Transparency = 1}):Play()
-    task.wait(0.35)
+    TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1}):Play()
+    TweenService:Create(UIStroke, TweenInfo.new(0.2), {Transparency = 1}):Play()
+    task.wait(0.25)
     MainFrame.Visible = false
     MiniIcon.Visible = true
-    TweenService:Create(MiniIcon, TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 0.1}):Play()
-    TweenService:Create(MiniStroke, TweenInfo.new(0.4), {Transparency = 0}):Play()
+    TweenService:Create(MiniIcon, TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 0.1}):Play()
+    TweenService:Create(MiniStroke, TweenInfo.new(0.3), {Transparency = 0}):Play()
 end)
 
 MiniIcon.MouseButton1Click:Connect(function()
-    TweenService:Create(MiniIcon, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
-    TweenService:Create(MiniStroke, TweenInfo.new(0.3), {Transparency = 1}):Play()
-    task.wait(0.25)
+    TweenService:Create(MiniIcon, TweenInfo.new(0.2), {BackgroundTransparency = 1}):Play()
+    TweenService:Create(MiniStroke, TweenInfo.new(0.2), {Transparency = 1}):Play()
+    task.wait(0.15)
     MiniIcon.Visible = false
     MainFrame.Visible = true
-    TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 520, 0, 340), BackgroundTransparency = 0.05}):Play()
-    TweenService:Create(UIStroke, TweenInfo.new(0.5), {Transparency = 0}):Play()
+    TweenService:Create(MainFrame, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 520, 0, 340), BackgroundTransparency = 0.05}):Play()
+    TweenService:Create(UIStroke, TweenInfo.new(0.4), {Transparency = 0}):Play()
 end)
 
 CloseBtn.MouseButton1Click:Connect(function()
-    TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1}):Play()
-    task.wait(0.3)
+    TweenService:Create(MainFrame, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1}):Play()
+    task.wait(0.2)
     ScreenGui:Destroy()
 end)
 
@@ -205,11 +209,11 @@ for i, tabName in ipairs(Tabs) do
     TabBtn.Font = Enum.Font.GothamBold
     TabBtn.TextSize = 12
     TabBtn.Parent = TabContainer
-    Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 8)
     TabButtons[tabName] = TabBtn
+    Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 8)
 
     TabBtn.MouseButton1Click:Connect(function()
-        for _, p do p.Visible = false end
+        for _, p in pairs(Pages) do p.Visible = false end
         for _, btn in pairs(TabButtons) do btn.BackgroundColor3 = PanelColor end
         Page.Visible = true
         TweenService:Create(TabBtn, TweenInfo.new(0.2), {BackgroundColor3 = ThemeColor}):Play()
@@ -448,7 +452,6 @@ CreateButton(Pages["SETTINGS"], "Ubah Warna Acak", function()
     local b = math.random(190, 255)
     ThemeColor = Color3.fromRGB(r, g, b)
     ActiveColor = Color3.fromRGB(math.clamp(r+20, 0, 255), math.clamp(g+20, 0, 255), 255)
-    Watermark.TextColor3 = ThemeColor
 end)
 
 CreateButton(Pages["SETTINGS"], "Ganti Bahasa", function()
